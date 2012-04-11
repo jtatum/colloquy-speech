@@ -68,7 +68,7 @@ def processUserCommand( command, arguments, connection, view ):
          message('Voices: ' + voice_list, 'voiceList', None)
       elif (args.startswith('voice ')):
          requested_voice = args[6:].lstrip()
-         if setvoice(requested_voice):
+         if setvoice(requested_voice.capitalize()):
             message('Set voice to ' + requested_voice, 'voiceSet', None)
          else:
             message('%s is an invalid voice' % requested_voice, 'voiceSet',
@@ -79,7 +79,7 @@ def processUserCommand( command, arguments, connection, view ):
                '----',
                '/speech on - Enable speech',
                '/speech off - Disable speech',
-               '/speech voices - List available voices. Note these are case-sensitive.',
+               '/speech voices - List available voices.',
                '/speech voice VOICE - Set speaking voice',
                '/speech help - Display this help'
                ]
