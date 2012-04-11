@@ -31,7 +31,13 @@ Usage
   Display a list of available voices
 
 /speech voice
-  Select a speaking voice, for instance /speech voice Agnes
+  Select a speaking voice, for instance /speech voice agnes
+
+/speech nick on
+  Speak the nick as well
+
+/speech nick off
+  Do not speak the nick
 
 /speech help
   Produce a list of all commands available in the speech plugin.
