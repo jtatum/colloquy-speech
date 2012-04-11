@@ -17,6 +17,7 @@ from Foundation import *
 from AppKit import *
 
 speaking = False
+speaknick = False
 synthesizer = None
 
 def voices():
@@ -53,6 +54,7 @@ def load( scriptFilePath ):
 def processUserCommand( command, arguments, connection, view ):
    '''handle commands entered by the user'''
    global speaking
+   global speaknick
    # Remap this very long objective C function to something shorter
    message = view.addEventMessageToDisplay_withName_andAttributes_
    args = arguments.mutableString()
@@ -73,6 +75,12 @@ def processUserCommand( command, arguments, connection, view ):
          else:
             message('%s is an invalid voice' % requested_voice, 'voiceSet',
                   None)
+      elif (args == 'nick on'):
+         speaknick = True
+         message('Will speak nicknames.', 'nickSpeakSet', None)
+      elif (args == 'nick off'):
+         speaknick = False
+         message('Will not speak nicknames.', 'nickSpeakSet', None)
       elif (args in ['help', '?']):
          help_text = [
                'Speech plugin:',
@@ -81,6 +89,8 @@ def processUserCommand( command, arguments, connection, view ):
                '/speech off - Disable speech',
                '/speech voices - List available voices.',
                '/speech voice VOICE - Set speaking voice',
+               '/speech nick on - Speak the nick as well',
+               '/speech nick off - Don\'t speak the nick',
                '/speech help - Display this help'
                ]
          for line in help_text:
@@ -94,10 +104,15 @@ def processUserCommand( command, arguments, connection, view ):
 # called for each incoming message, the message is mutable
 def processIncomingMessage( message, view ):
    global speaking
+   global speaknick
    msg = message.bodyAsPlainText()
    source = view.identifier()
    if speaking and source.startswith('Chat Room'):
-      say(message.senderNickname() + ' ' + msg)
+      if speaknick:
+         say(message.senderNickname() + ' ' + msg)
+      else:
+         say(msg)
+
 
 # Unused functions below:
 
