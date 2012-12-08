@@ -62,12 +62,15 @@ def processUserCommand( command, arguments, connection, view ):
       if (args in ['enable', 'on']):
          speaking = True
          message('Speech enabled', 'speechEnabled', None)
+         return True
       elif (args in ['disable', 'off']):
          speaking = False
          message('Speech disabled', 'speechDisabled', None)
+         return True
       elif (args == 'voices'):
          voice_list = ', '.join(voices())
          message('Voices: ' + voice_list, 'voiceList', None)
+         return True
       elif (args.startswith('voice ')):
          requested_voice = args[6:].lstrip()
          if setvoice(requested_voice.capitalize()):
@@ -75,12 +78,15 @@ def processUserCommand( command, arguments, connection, view ):
          else:
             message('%s is an invalid voice' % requested_voice, 'voiceSet',
                   None)
+         return True
       elif (args == 'nick on'):
          speaknick = True
          message('Will speak nicknames.', 'nickSpeakSet', None)
+         return True
       elif (args == 'nick off'):
          speaknick = False
          message('Will not speak nicknames.', 'nickSpeakSet', None)
+         return True
       elif (args in ['help', '?']):
          help_text = [
                'Speech plugin:',
@@ -95,6 +101,7 @@ def processUserCommand( command, arguments, connection, view ):
                ]
          for line in help_text:
             message(line, 'speechHelp', None)
+         return True
       else:
          message('Invalid command. For help, use /speech help',
                'speechInvalid', None)
