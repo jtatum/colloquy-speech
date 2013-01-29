@@ -116,7 +116,7 @@ def processIncomingMessage( message, view ):
    source = view.identifier()
    if speaking and source.startswith('Chat Room'):
       if speaknick:
-         say(message.senderNickname() + ' ' + msg)
+         say(message.senderNickname() + ': ' + msg)
       else:
          say(msg)
 
