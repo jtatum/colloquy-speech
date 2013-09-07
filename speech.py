@@ -17,8 +17,10 @@ from Foundation import *
 from AppKit import *
 
 speaking = False
+speaking_now = False
 speaknick = False
 synthesizer = None
+queue = []
 
 def voices():
    '''return a list of available voices'''
@@ -38,9 +40,29 @@ def setvoice(voice):
       return True
    return False
 
+
 def say(txt):
-   '''say the specified text'''
-   synthesizer.startSpeakingString_(txt)
+    '''say the specified text'''
+    global speaking_now, queue
+
+    if not speaking_now:
+        speaking_now = True
+        synthesizer.startSpeakingString_(txt)
+    else:
+        queue.append(txt)
+
+
+class SpeechDelegate(NSObject):
+    def speechSynthesizer_didFinishSpeaking_(self, synthesizer, success):
+        global speaking_now, queue
+
+        if len(queue) > 0:
+            txt = queue.pop(0)
+            synthesizer.startSpeakingString_(txt)
+        else:
+            speaking_now = False
+delegate = SpeechDelegate.new()
+
 
 def load( scriptFilePath ):
    '''colloquy calls this function on plugin load
@@ -50,6 +72,8 @@ def load( scriptFilePath ):
    global synthesizer
    voice = NSSpeechSynthesizer.defaultVoice()
    synthesizer = NSSpeechSynthesizer.alloc().initWithVoice_(voice)
+   synthesizer.setDelegate_(delegate)
+
 
 def processUserCommand( command, arguments, connection, view ):
    '''handle commands entered by the user'''
